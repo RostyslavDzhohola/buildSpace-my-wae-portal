@@ -13,4 +13,4 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
-adding some info
+WavePortal contract deployed at 0x5701EEA67614714b2d28Fe63c63fa1ad8cd2fa6C
