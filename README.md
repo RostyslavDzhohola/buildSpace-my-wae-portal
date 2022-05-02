@@ -13,4 +13,21 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
-WavePortal contract deployed at 0x5701EEA67614714b2d28Fe63c63fa1ad8cd2fa6C
+
+Articles
+- https://medium.com/daox/three-methods-to-transfer-funds-in-ethereum-by-means-of-solidity-5719944ed6e9
+- Sending ETH to contract 
+    - https://docs.ethers.io/v5/migration/web3/
+    - https://ethereum.stackexchange.com/questions/77028/sending-an-ethereum-transaction-with-ethers-js-and-metamask
+    - https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/
+    `
+    const params = [{
+        from: signer.address,
+        to: waveContract.address,
+        value: hre.ethers.utils.parseEther("4").toHexString()
+       
+    }];
+
+    const transactionHash = await signer.provider.send('eth_sendTransaction', params);
+    console.log("transactionHash is " + transactionHash);
+    `
