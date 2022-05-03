@@ -8,8 +8,14 @@ contract WavePortal {
     uint256 totalWaves;
     uint256 private seed;
     bool private winner = false;
-    uint256 prizeAmount = 2.3 ether;
+    uint256 prizeAmount = 0.3 ether;
     address addrWaver;
+    address public owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not the owner");
+        _;
+    }
 
     event NewWave(address indexed from, uint256 timestamp, string message, bool luck);
     
@@ -27,6 +33,7 @@ contract WavePortal {
  
     constructor() payable {
         console.log("That's one small step for man, one giant leap for mankind");
+        owner = msg.sender;
         // seed = (block.timestamp + block.difficulty) % 100;
     }
 
@@ -45,7 +52,7 @@ contract WavePortal {
         seed = (block.timestamp + block.difficulty) % 100;
 
         console.log("%s waved w/ message -> %s", addrWaver, _message);
-        if (seed <= 50) {
+        if (seed <= 10) {
             winner = true;
         } else {
             winner = false;
@@ -88,6 +95,13 @@ contract WavePortal {
         console.log("Account", msg.sender, "number of waves is", wavesByAccount[msg.sender] );
         return wavesByAccount[msg.sender];
     }
+
+    function withdrawAll() public onlyOwner returns(bool) {
+        // owner.transfer(address(this).balance);
+        (bool success, ) = (owner).call{value: address(this).balance}("");
+        require(success, "Transfer failed.");
+        return true;
+    } 
 
     fallback() external payable {}
 

@@ -93,6 +93,15 @@ const main = async () => {
         hre.ethers.utils.formatEther(contractBalance)
     );
 
+    const getMyMoney = await waveContract.withdrawAll();
+    await getMyMoney.wait();
+
+    contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+    console.log(
+        "Contract balance after withdrawal  some ETH:",
+        hre.ethers.utils.formatEther(contractBalance)
+    );
+
     // userBalance = await hre.ethers.provider.getBalance(waver1.address);
     // console.log(
     //     "Waver1 balance After sending ETH-------->> ", 
