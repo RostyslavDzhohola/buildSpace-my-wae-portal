@@ -18,16 +18,54 @@ describe("Wave Contract", function() {
         let userBalance;
     });
 
-    it("Contract ballance is 10 ETH", async function () {
+    it("passes if contract ballance is 10 ETH", async function () {
         let contractBalance = await hre.ethers.provider.getBalance(contract.address);
         expect(hre.ethers.utils.formatEther(contractBalance)).to.equal("10.0");
     });
 
-    it("Increase amount of waves by 1", async function () {
+    it("passes if total waves increased by 1", async function () {
         expect(await contract.getTotalWaves()).to.equal("0");
         const waveTxn = await contract.connect(waver2).wave("This is wave #1");
         await waveTxn.wait();
         expect(await contract.getTotalWaves()).to.equal("1");
+    });
+
+    it("Cotract balance should be 0 account balance should increase", async function () {
+        let contractBalance = await hre.ethers.provider.getBalance(contract.address);
+        expect(hre.ethers.utils.formatEther(contractBalance)).to.equal("10.0");
+        let waverBalance1 = await hre.ethers.provider.getBalance(waver1.address);
+        const withdrawAll = await contract.withdrawAll();
+        await withdrawAll.wait();
+        let waverBalance2 = await hre.ethers.provider.getBalance(waver1.address);
+        expect(waverBalance2).to.be.above(waverBalance1);
+        expect(await hre.ethers.provider.getBalance(contract.address)).to.equal("0");
+        console.log("Waver after withdrawal", hre.ethers.utils.formatEther(waverBalance2));
+    });
+
+    it("Increace contract balance by 5.1 ETH", async function () {
+        let contractBalance = await hre.ethers.provider.getBalance(contract.address);
+        expect(hre.ethers.utils.formatEther(contractBalance)).to.equal("10.0");
+        const params = [{
+            from: waver1.address,
+            to: contract.address,
+            value: hre.ethers.utils.parseEther("5.1").toHexString()
+        }];
+        const transactionHash = await waver1.provider.send('eth_sendTransaction', params);
+        console.log("transactionHash is " + transactionHash);
+        contractBalance = await hre.ethers.provider.getBalance(contract.address);
+        expect(hre.ethers.utils.formatEther(contractBalance)).to.equal("15.1");
+    });
+
+    it("Withdraw all should revert with 'Not the owner'", async function () {
+        let contractBalance = await hre.ethers.provider.getBalance(contract.address);
+        await expect(contract.connect(waver2).withdrawAll()).to.be.revertedWith("Not the owner");
+        expect(hre.ethers.utils.formatEther(contractBalance)).to.equal("10.0");
+    });
+
+    it("Should increse contract balance by 2", async function () {
+        await expect(await waver3.sendTransaction({to: contract.address, value: 2})).to.changeEtherBalance(contract, 2);
+        let contractBalance = await hre.ethers.provider.getBalance(contract.address);
+        console.log("Contract balance is ", hre.ethers.utils.formatEther(contractBalance));
     });
 
 }); 

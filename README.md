@@ -31,3 +31,6 @@ Articles
     const transactionHash = await signer.provider.send('eth_sendTransaction', params);
     console.log("transactionHash is " + transactionHash);
     `
+- Ether formating https://docs.ethers.io/v5/api/utils/display-logic/
+- Creating tests for my contract https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
+- 
