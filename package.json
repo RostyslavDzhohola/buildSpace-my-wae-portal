@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "npx hardhat run scripts/deploy.js --network rinkeby",
-    "deploy mumbai": "npx hardhat run scripts/deploy.js --network mumbai",
+    "deploy-mumbai": "npx hardhat run scripts/deploy.js --network mumbai",
     "runjs": "npx hardhat run scripts/run.js",
     "runtest": "npx hardhat run scripts/test.js"
   },

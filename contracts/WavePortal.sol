@@ -8,7 +8,7 @@ contract WavePortal {
     uint256 totalWaves;
     uint256 private seed;
     bool private winner = false;
-    uint256 prizeAmount = 0.3 ether;
+    uint256 prizeAmount = 0.001 ether;
     address addrWaver;
     address public owner;
 
@@ -52,7 +52,7 @@ contract WavePortal {
         seed = (block.timestamp + block.difficulty) % 100;
 
         console.log("%s waved w/ message -> %s", addrWaver, _message);
-        if (seed <= 10) {
+        if (seed <= 100) {
             winner = true;
         } else {
             winner = false;

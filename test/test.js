@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const { formatEther } = require("ethers/lib/utils");
 const { ethers } = require("hardhat");
 
 describe("Wave Contract", function() {
@@ -66,6 +67,19 @@ describe("Wave Contract", function() {
         await expect(await waver3.sendTransaction({to: contract.address, value: 2})).to.changeEtherBalance(contract, 2);
         let contractBalance = await hre.ethers.provider.getBalance(contract.address);
         console.log("Contract balance is ", hre.ethers.utils.formatEther(contractBalance));
+    });
+
+    it("Should write True to a struct if won" , async function () {
+        let waverBalance1 = await ethers.provider.getBalance(waver2.address);
+        const waveTxn = await contract.connect(waver2).wave("This is wave #1");
+        await waveTxn.wait();
+        let waverBalance2 = await ethers.provider.getBalance(waver2.address);
+        let allWaves = await contract.getAllWaves();
+        console.log("Returning struct...",allWaves);
+        if(allWaves[0].lucky) {
+            expect(waverBalance2).to.be.gt(waverBalance1);
+        } 
+        expect(allWaves[0].message).to.equal('This is wave #1');
     });
 
 }); 
