@@ -13,4 +13,24 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
-adding some info
+
+Articles
+- https://medium.com/daox/three-methods-to-transfer-funds-in-ethereum-by-means-of-solidity-5719944ed6e9
+- Sending ETH to contract 
+    - https://docs.ethers.io/v5/migration/web3/
+    - https://ethereum.stackexchange.com/questions/77028/sending-an-ethereum-transaction-with-ethers-js-and-metamask
+    - https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/
+    `
+    const params = [{
+        from: signer.address,
+        to: waveContract.address,
+        value: hre.ethers.utils.parseEther("4").toHexString()
+       
+    }];
+
+    const transactionHash = await signer.provider.send('eth_sendTransaction', params);
+    console.log("transactionHash is " + transactionHash);
+    `
+- Ether formating https://docs.ethers.io/v5/api/utils/display-logic/
+- Creating tests for my contract https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
+- 

@@ -1,33 +1,59 @@
 const main = async () => {
-    const [owner, randomPerson] = await hre.ethers.getSigners();
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-    const waveContract = await waveContractFactory.deploy();
+    const waveContract = await waveContractFactory.deploy({
+      value: hre.ethers.utils.parseEther("0.1"),
+    });
     await waveContract.deployed();
-  
     console.log("Contract deployed to:", waveContract.address);
-    console.log("Contract deployed by:", owner.address);
-    console.log("Random person address:", randomPerson.address);
-  
+
+    let contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+    console.log(
+      "Contract balance:",
+      hre.ethers.utils.formatEther(contractBalance)
+    );
+
     let waveCount;
-    let waveCountByAddress;
     let waveTxnByAddress;
     waveCount = await waveContract.getTotalWaves();
+    console.log(waveCount.toNumber());
   
-    let waveTxn = await waveContract.wave();
+    const waveTxn = await waveContract.wave("This is wave #1");
     await waveTxn.wait();
+
+    const waveTxn2 = await waveContract.wave("This is wave #2");
+    await waveTxn2.wait();
+
+    contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+    console.log(
+      "Contract balance:",
+      hre.ethers.utils.formatEther(contractBalance)
+    );
+
+    waveCount = await waveContract.getTotalWaves();
+    console.log("After two waves", waveCount.toNumber());
+  
+    const [_, randomPerson] = await hre.ethers.getSigners();
+    waveTxn3 = await waveContract.connect(randomPerson).wave("Another message from randomPerson!");
+    await waveTxn3.wait();
+
+    let allWaves = await waveContract.getAllWaves();
+    console.log("Returning struct...",allWaves);
   
     waveCount = await waveContract.getTotalWaves();
+    console.log("Total amount of waves before random person waves", waveCount.toNumber());
 
     let randomWaves = Math.floor(Math.random() * 10) + 1;
     for (let index = 0; index < randomWaves; index++) {
-        waveTxn = await waveContract.connect(randomPerson).wave();
-        await waveTxn.wait();
+        waveTxn3 = await waveContract.connect(randomPerson).wave("I am so random");
+        await waveTxn3.wait();
         
     };
 
     waveTxnByAddress = await waveContract.connect(randomPerson).getMyWaves();
+    console.log("Number of times randomPerson waved...", waveTxnByAddress.toNumber());
 
     waveCount = await waveContract.getTotalWaves();
+    console.log("Total amount of waves after random person waves", waveCount.toNumber());
 
   };
   
